@@ -1,11 +1,39 @@
 from django.shortcuts import render
-from .models import Demo
+from .models import Demo,users
 # Create your views here.
 def index(request):
     all=Demo.objects.all()
 
+    def get_ip(request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
 
-    return render(request,'index.html',{'all':all})
+            
+        return ip
+
+    ip=get_ip(request)
+    u=users(user=ip)
+    lst=[]
+    all_ip=users.objects.all()
+    for i in all_ip:
+        lst.append(i.user)
+    print(lst)    
+    
+    if ip in lst:
+        pass
+    else:
+        u.save()
+    count=users.objects.all().count()
+
+
+
+
+
+    return render(request,'index.html',{'all':all,'count':count})
 
 def second(request):
     return render(request,'second.html')  
@@ -27,3 +55,5 @@ def search(request):
         print('person name:',person.name)
 
     return render(request,'profile.html',{'name':person.name,'age':person.age,'pic':person.image1})        
+
+
