@@ -11,5 +11,4 @@ class Demo(models.Model):
 
 class users(models.Model):
     user=models.TextField(default=None)
-    def __str__(self):
-        return self.user    
+       
